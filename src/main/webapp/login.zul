@@ -1,0 +1,19 @@
+<?page title="Đăng nhập" contentType="text/html;charset=UTF-8"?>
+<zk>
+  <window title="Đăng nhập" border="normal" width="420px"
+          apply="org.zkoss.bind.BindComposer"
+          viewModel="@id('vm') @init('com.example.docflow.vm.LoginVM')">
+    <vlayout spacing="8px" style="padding:16px">
+      <label value="@load(vm.message)" style="color:#666"/>
+      <hlayout spacing="8px">
+        <label value="Tài khoản" width="90px"/>
+        <textbox value="@bind(vm.username)" width="250px" />
+      </hlayout>
+      <hlayout spacing="8px">
+        <label value="Mật khẩu" width="90px"/>
+        <textbox type="password" value="@bind(vm.password)" width="250px" />
+      </hlayout>
+      <button label="Đăng nhập" onClick="@command('doLogin')" width="120px"/>
+    </vlayout>
+  </window>
+</zk>

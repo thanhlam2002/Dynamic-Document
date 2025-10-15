@@ -1,0 +1,70 @@
+<!-- src/main/webapp/dashboard.zul -->
+<?page title="Dashboard" contentType="text/html;charset=UTF-8"?>
+<zk>
+  <window title="Thống kê" width="900px" border="normal"
+          apply="org.zkoss.bind.BindComposer"
+          viewModel="@id('vm') @init('com.example.docflow.vm.DashboardVM')">
+    <vlayout spacing="12px" style="padding:16px">
+
+      <hlayout spacing="16px">
+        <groupbox mold="3d" width="420px">
+          <caption label="Theo trạng thái"/>
+          <vlayout spacing="8px" style="padding:8px">
+            <hlayout valign="middle">
+              <label value="Tổng:" width="120px"/>
+              <label value="@load(vm.total)"/>
+              <button label="↻" onClick="@command('refresh')" tooltiptext="Làm mới"/>
+            </hlayout>
+
+            <hlayout>
+              <label value="Chờ xử lý" width="120px"/>
+              <progressmeter value="@load(vm.pct(vm.status('PENDING')))" width="200px"/>
+              <label value="@load(vm.status('PENDING'))"/>
+            </hlayout>
+            <hlayout>
+              <label value="Đang xử lý" width="120px"/>
+              <progressmeter value="@load(vm.pct(vm.status('IN_PROGRESS')))" width="200px"/>
+              <label value="@load(vm.status('IN_PROGRESS'))"/>
+            </hlayout>
+            <hlayout>
+              <label value="Đã duyệt" width="120px"/>
+              <progressmeter value="@load(vm.pct(vm.status('APPROVED')))" width="200px"/>
+              <label value="@load(vm.status('APPROVED'))"/>
+            </hlayout>
+            <hlayout>
+              <label value="Từ chối" width="120px"/>
+              <progressmeter value="@load(vm.pct(vm.status('REJECTED')))" width="200px"/>
+              <label value="@load(vm.status('REJECTED'))"/>
+            </hlayout>
+            <hlayout>
+              <label value="Hoàn thành" width="120px"/>
+              <progressmeter value="@load(vm.pct(vm.status('COMPLETED')))" width="200px"/>
+              <label value="@load(vm.status('COMPLETED'))"/>
+            </hlayout>
+          </vlayout>
+        </groupbox>
+
+        <groupbox mold="3d" width="420px">
+          <caption label="Theo loại văn bản"/>
+          <vlayout spacing="8px" style="padding:8px">
+            <hlayout>
+              <label value="Văn bản Đi" width="120px"/>
+              <progressmeter value="@load(vm.pct(vm.type('OUTGOING')))" width="200px"/>
+              <label value="@load(vm.type('OUTGOING'))"/>
+            </hlayout>
+            <hlayout>
+              <label value="Văn bản Đến" width="120px"/>
+              <progressmeter value="@load(vm.pct(vm.type('INCOMING')))" width="200px"/>
+              <label value="@load(vm.type('INCOMING'))"/>
+            </hlayout>
+          </vlayout>
+        </groupbox>
+      </hlayout>
+
+      <hlayout spacing="8px">
+        <button label="Danh sách" onClick='Executions.sendRedirect("documents.zul")'/>
+        <button label="Tạo mới" onClick='Executions.sendRedirect("new_document.zul")'/>
+      </hlayout>
+    </vlayout>
+  </window>
+</zk>

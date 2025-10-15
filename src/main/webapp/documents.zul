@@ -1,0 +1,81 @@
+<?page title="Danh sách văn bản" contentType="text/html;charset=UTF-8"?>
+<zk>
+  <window width="100%" title="Danh sách văn bản"
+          apply="org.zkoss.bind.BindComposer"
+          viewModel="@id('vm') @init('com.example.docflow.vm.DocumentListVM')">
+    <vbox hflex="1" vflex="1" spacing="8px" style="padding:12px">
+
+      <!-- Thanh công cụ trên cùng -->
+<hlayout hflex="1" spacing="8px"
+         style="padding:8px 12px; background:#f7f7f7; border-bottom:1px solid #eee; display:flex; align-items:center;">
+  <label value="📄 Danh sách văn bản" style="font-weight:bold;"/>
+  <hlayout hflex="1"/>
+  <label value="@load(vm.currentUserLabel)" style="color:#666; margin-right:8px"/>
+  <button label="Dashboard" onClick="@command('goDashboard')" tooltiptext="Xem thống kê"/>
+  <button label="Logout" onClick="@command('logout')" tooltiptext="Đăng xuất"/>
+</hlayout>
+
+      <!-- Bộ lọc -->
+      <hbox spacing="8px">
+        <textbox placeholder="Tìm (số hiệu/tiêu đề/nội dung)"
+                 value="@bind(vm.keyword)" width="320px"/>
+
+        <combobox width="160px" placeholder="Loại"
+                  model="@load(vm.typeOptionsAll)"
+                  selectedItem="@bind(vm.type)" autodrop="true" readonly="true"
+                  onSelect="@command('search')">
+          <template name="model" var="t">
+            <comboitem label="@load(vm.labelOfType(t))" value="@load(t)"/>
+          </template>
+        </combobox>
+
+        <combobox width="180px" placeholder="Trạng thái"
+                  model="@load(vm.statusOptionsAll)"
+                  selectedItem="@bind(vm.status)" autodrop="true" readonly="true"
+                  onSelect="@command('search')">
+          <template name="model" var="s">
+            <comboitem label="@load(vm.labelOfStatus(s))" value="@load(s)"/>
+          </template>
+        </combobox>
+
+        <datebox placeholder="Từ ngày" value="@bind(vm.fromDate)" format="dd/MM/yyyy"/>
+        <datebox placeholder="Đến ngày" value="@bind(vm.toDate)" format="dd/MM/yyyy"/>
+
+        <button label="Tìm" onClick="@command('search')"/>
+        <button label="Tạo mới" onClick='Executions.sendRedirect("new_document.zul")'/>
+      </hbox>
+
+      <!-- Paging ngoài: chỉ để UI điều khiển -->
+      <paging id="pg" detailed="true"
+              activePage="@load(vm.activePage)"
+              totalSize="@load(vm.totalSize)"
+              pageSize="@load(vm.pageSize)"
+              onPaging="@command('gotoPage', page=event.activePage)"/>
+
+      <!-- Grid KHÔNG dùng mold='paging' và KHÔNG có <paging> con -->
+      <grid model="@bind(vm.documents)" sizedByContent="true" hflex="1">
+        <columns>
+          <column label="Số hiệu" width="120px"/>
+          <column label="Tiêu đề"/>
+          <column label="Loại" width="90px"/>
+          <column label="Trạng thái" width="120px"/>
+          <column label="Ngày" width="180px"/>
+          <column label="" width="100px"/>
+        </columns>
+        <rows>
+          <template name="model" var="d" model="@bind(vm.documents)">
+            <row>
+              <label value="@load(d.docNo)"/>
+              <label value="@load(d.title)"/>
+              <label value="@load(d.type)"/>
+              <label value="@load(d.status)"/>
+              <label value="@load(d.displayDate)"/>
+              <button label="Xem" onClick="@command('openDetail', id=d.id)"/>
+            </row>
+          </template>
+        </rows>
+      </grid>
+
+    </vbox>
+  </window>
+</zk>

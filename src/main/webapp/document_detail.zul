@@ -1,0 +1,97 @@
+<?page title="Chi tiết văn bản" contentType="text/html;charset=UTF-8"?>
+<zk>
+  <window width="900px" title="Chi tiết văn bản"
+          apply="org.zkoss.bind.BindComposer"
+          viewModel="@id('vm') @init('com.example.docflow.vm.DocumentDetailVM')"
+          border="normal" closable="true"
+          onClose="@command('closeWindow')">
+    <vlayout style="padding:12px" spacing="8px">
+
+      <!-- Thông tin chính -->
+      <hlayout spacing="12px">
+        <label value="Số hiệu:" style="font-weight:bold;"/>
+        <label value="@load(vm.doc.docNo)"/>
+        <separator orient="vertical" width="12px"/>
+        <label value="Trạng thái:" style="font-weight:bold;"/>
+        <label value="@load(vm.doc.status)"/>
+        <separator orient="vertical" width="12px"/>
+        <label value="Loại:" style="font-weight:bold;"/>
+        <label value="@load(vm.doc.type)"/>
+      </hlayout>
+
+      <label value="@load(vm.doc.title)" style="font-size:16px;font-weight:bold"/>
+      <label value="@load(vm.doc.content)" multiline="true" width="100%"/>
+
+      <!-- Khu xử lý (chỉ leader mới thao tác) -->
+      <!-- LƯU Ý: trong VM cần có public boolean isLeader() { ... } -->
+      <groupbox mold="3d" width="100%" visible="@load(vm.leader)">
+        <caption label="Xử lý"/>
+        <hlayout spacing="8px" valign="middle">
+          <textbox placeholder="Ghi chú" value="@bind(vm.comment)" width="380px" disabled="@load(vm.working)"/>
+          <combobox model="@load(vm.users)" selectedItem="@bind(vm.selectedUser)"
+                    autodrop="true" readonly="true" width="240px" placeholder="Chọn người nhận"
+                    disabled="@load(!vm.canForward)">
+            <template name="model" var="u">
+              <comboitem label="@load(vm.userLabel(u))" value="@load(u)"/>
+            </template>
+          </combobox>
+          <button label="Duyệt"       onClick="@command('approve')"  disabled="@load(!vm.canApprove)"/>
+          <button label="Từ chối"     onClick="@command('reject')"   disabled="@load(!vm.canReject)"/>
+          <button label="Chuyển tiếp" onClick="@command('forward')"  disabled="@load(!vm.canForward)"/>
+          <button label="Quay lại"    onClick="@command('closeWindow')"/>
+        </hlayout>
+
+        <!-- Thông báo đang xử lý -->
+        <label value="Đang xử lý..." style="color:#888" visible="@load(vm.working)"/>
+        <label value="" visible="@load(!vm.working)"/>
+      </groupbox>
+
+      <!-- Đính kèm: chỉ xem & tải xuống -->
+      <groupbox mold="3d" width="100%">
+        <caption label="Đính kèm"/>
+        <listbox model="@load(vm.attachments)" width="100%" sizedByContent="true" emptyMessage="Không có tệp đính kèm">
+          <listhead>
+            <listheader label="Tên tệp"/>
+            <listheader label="Dung lượng" width="160px"/>
+            <listheader label="Tải xuống" width="140px"/>
+          </listhead>
+          <template name="model" var="f">
+            <listitem>
+              <listcell label="@load(f.filename)"/>
+              <listcell label="@load(vm.formatSize(f.sizeBytes))"/>
+              <listcell>
+                <a label="Download" target="_blank" href="@load(vm.fileUrl(f.id))"/>
+              </listcell>
+            </listitem>
+          </template>
+        </listbox>
+      </groupbox>
+
+      <!-- Lịch sử xử lý -->
+      <groupbox mold="3d" width="100%">
+        <caption label="Lịch sử xử lý"/>
+        <listbox model="@load(vm.histories)" width="100%" sizedByContent="true">
+          <listhead>
+            <listheader label="Thời gian" width="180px"/>
+            <listheader label="Hành động" width="120px"/>
+            <listheader label="Người thực hiện" width="180px"/>
+            <listheader label="Chuyển đến" width="180px"/>
+            <listheader label="Trạng thái sau" width="140px"/>
+            <listheader label="Ghi chú"/>
+          </listhead>
+          <template name="model" var="h">
+            <listitem>
+              <listcell label="@load(h.atTime)"/>
+              <listcell label="@load(h.action)"/>
+              <listcell label="@load(vm.userName(h.actorId))"/>
+              <listcell label="@load(vm.userName(h.toUserId))"/>
+              <listcell label="@load(h.statusAfter)"/>
+              <listcell label="@load(h.comment)"/>
+            </listitem>
+          </template>
+        </listbox>
+      </groupbox>
+
+    </vlayout>
+  </window>
+</zk>

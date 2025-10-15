@@ -1,0 +1,81 @@
+<!-- src/main/webapp/new_document.zul -->
+<?page title="Tạo văn bản" contentType="text/html;charset=UTF-8"?>
+<zk>
+  <window title="Tạo mới văn bản" width="800px" border="normal"
+          apply="org.zkoss.bind.BindComposer"
+          viewModel="@id('vm') @init('com.example.docflow.vm.NewDocumentVM')">
+
+    <vlayout spacing="10px" style="padding:16px">
+
+      <hlayout spacing="8px">
+        <label value="Loại:" width="120px"/>
+        <radiogroup selectedIndex="@bind(vm.typeIndex)"
+                    onCheck="@command('changeType', val=self.selectedItem.value)">
+          <radio label="Đi"  value="OUTGOING"/>
+          <radio label="Đến" value="INCOMING"/>
+        </radiogroup>
+      </hlayout>
+
+      <hlayout spacing="8px">
+        <label value="Số hiệu:" width="120px"/>
+        <textbox value="@bind(vm.docNo)" width="220px"/>
+      </hlayout>
+
+      <hlayout spacing="8px">
+        <label value="Tiêu đề:" width="120px"/>
+        <textbox value="@bind(vm.title)" width="500px"/>
+      </hlayout>
+
+      <hlayout spacing="8px">
+        <label value="Nội dung:" width="120px" style="padding-top:6px"/>
+        <textbox value="@bind(vm.content)" width="500px" rows="5" multiline="true"/>
+      </hlayout>
+
+      <hlayout spacing="8px" visible="@load(vm.type eq 'OUTGOING')">
+        <label value="Nơi nhận:" width="120px"/>
+        <textbox value="@bind(vm.receiverOrg)" width="300px"/>
+      </hlayout>
+
+      <hlayout spacing="8px" visible="@load(vm.type eq 'INCOMING')">
+        <label value="Nơi gửi:" width="120px"/>
+        <textbox value="@bind(vm.senderOrg)" width="300px"/>
+      </hlayout>
+
+      <!-- ĐÍNH KÈM (upload trong màn tạo mới) -->
+      <groupbox mold="3d" width="100%">
+        <caption label="Đính kèm"/>
+        <vlayout spacing="8px" style="padding:6px">
+          <hlayout spacing="8px" valign="middle">
+            <label value="Tải tệp:" width="120px"/>
+            <button label="Chọn file..." upload="true,multiple=true,maxsize=10485760"
+                    onUpload="@command('uploadFiles')"/>
+            <label value="Có thể chọn nhiều file. 10MB/file." style="color:#666"/>
+          </hlayout>
+
+          <listbox model="@load(vm.tempFiles)" width="100%" sizedByContent="true" emptyMessage="Chưa chọn tệp nào">
+            <listhead>
+              <listheader label="Tên tệp"/>
+              <listheader label="Dung lượng" width="150px"/>
+              <listheader label="Hành động" width="120px"/>
+            </listhead>
+            <template name="model" var="f">
+              <listitem>
+                <listcell label="@load(f.filename)"/>
+                <listcell label="@load(vm.formatSize(f.sizeBytes))"/>
+                <listcell>
+                  <button label="Xoá" onClick="@command('removeTempFile', tid=f.id)"/>
+                </listcell>
+              </listitem>
+            </template>
+          </listbox>
+        </vlayout>
+      </groupbox>
+
+      <separator/>
+      <hlayout spacing="8px">
+        <button label="Lưu" onClick="@command('save')"/>
+        <button label="Hủy" onClick='Executions.sendRedirect("documents.zul")'/>
+      </hlayout>
+    </vlayout>
+  </window>
+</zk>

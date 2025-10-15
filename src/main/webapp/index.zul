@@ -1,0 +1,8 @@
+<?page title="DocFlow" contentType="text/html;charset=UTF-8"?>
+<zk>
+  <vlayout width="100%" style="padding:16px">
+    <label value="DocFlow – Dynamic Document Workflow (ZK 7.0.3)"/>
+    <separator />
+    <a href="login.zul">Đi tới màn hình đăng nhập</a>
+  </vlayout>
+</zk>
