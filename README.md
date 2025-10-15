@@ -55,6 +55,7 @@ src/
  │
  └─ resources/
      └─ schema-mysql.sql           # Tạo bảng + seed
+
 ---
 
 ## ⚙️ Chuẩn bị môi trường
